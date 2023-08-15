@@ -6,12 +6,12 @@ export class TagController {
   constructor(private readonly tagService: TagService) {}
 
   @Get()
-  findAll() {
-    // return this.tagService.findAll();
+  getAll() {
+    return this.tagService.getAll();
   }
 
   @Get(':tagname')
-  findOne() {
+  findByName() {
     // return this.tagService.findOne(+id);
   }
 }

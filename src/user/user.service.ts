@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
+import { sign } from 'jsonwebtoken';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 
@@ -12,7 +13,14 @@ export class UserService {
   ) {}
   async register(data: RegisterUserDto) {
     const user = new User();
-    return await this.userRepository.save(Object.assign(user, data));
+    const gravatar = `https://secure.gravatar.com/avatar/${Math.ceil(
+      Math.random() * 100,
+    )}?s=164&d=identicon`;
+    user.gravatar = gravatar;
+    console.log();
+    const newUser = await this.userRepository.save(Object.assign(user, data));
+    console.log(sign({ id: newUser.id, username: newUser.username }, 'secret'));
+    return newUser;
   }
 
   async findAll() {

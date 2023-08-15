@@ -4,9 +4,12 @@ import {
   PrimaryGeneratedColumn,
   BeforeInsert,
   OneToMany,
+  JoinColumn,
 } from 'typeorm';
 import { hash } from 'bcrypt';
 import { Post } from 'src/post/entities/post.entity';
+import { Answer } from 'src/answer/entities/answer.entity';
+import { Comment } from 'src/comment/entities/comment.entity';
 
 @Entity({ name: 'user' })
 export class User {
@@ -23,7 +26,16 @@ export class User {
   gravatar: string;
 
   @OneToMany(() => Post, (post) => post.id)
-  posts: number[];
+  @JoinColumn()
+  posts: Post[];
+
+  @OneToMany(() => Answer, (answer) => answer.id)
+  @JoinColumn()
+  answers: Answer[];
+
+  @OneToMany(() => Comment, (comment) => comment.id)
+  @JoinColumn()
+  comments: Comment[];
 
   @BeforeInsert()
   async hashPassword() {

@@ -23,6 +23,7 @@ export class AuthMiddleware implements NestMiddleware {
       console.error(`error: ${err}`);
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     } finally {
+      console.log('here');
       next();
     }
   }

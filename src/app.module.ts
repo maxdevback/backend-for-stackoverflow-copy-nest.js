@@ -11,6 +11,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user/entities/user.entity';
 import { Post } from './post/entities/post.entity';
 import { Tag } from './tag/entities/tag.entity';
+import { PostTag } from './tag/entities/posttag.entity';
+import { Answer } from './answer/entities/answer.entity';
+import { Comment } from './comment/entities/comment.entity';
 
 @Module({
   imports: [
@@ -21,7 +24,7 @@ import { Tag } from './tag/entities/tag.entity';
       username: 'test',
       password: '1111',
       database: 'test',
-      entities: [User, Post, Tag],
+      entities: [User, Post, Tag, PostTag, Answer, Comment],
       synchronize: true,
     }),
     UserModule,
