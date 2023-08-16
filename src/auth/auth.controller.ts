@@ -15,8 +15,8 @@ export class AuthController {
 
   @Post()
   async login(@Body() data: LoginAuthDto, @Res() res: Response) {
-    const token = await this.authService.login(data);
-    res.setHeader('x-auth-token', token);
-    res.send('');
+    const userData = await this.authService.login(data);
+    res.setHeader('x-auth-token', userData.token);
+    res.send(userData.user);
   }
 }

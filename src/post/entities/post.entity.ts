@@ -15,20 +15,20 @@ export class Post {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ nullable: false })
   title: string;
 
-  @Column()
+  @Column({ nullable: false })
   body: string;
 
   //TODO: change relations to normal
-  @OneToMany(() => Answer, (answer) => answer.id)
+  @OneToMany(() => Answer, (answer) => answer.id, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'answer_id' })
   answers: Answer[];
 
-  @OneToMany(() => Comment, (comment) => comment.id)
+  @OneToMany(() => Comment, (comment) => comment.id, { onDelete: 'CASCADE' })
   comment: Comment[];
 
-  @ManyToOne(() => User, (user) => user.id)
-  User: User;
+  @ManyToOne(() => User, (user) => user.id, { nullable: false })
+  user: User;
 }

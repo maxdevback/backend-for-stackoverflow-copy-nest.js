@@ -32,6 +32,9 @@
 $ npm install
 ```
 
+- `fill env file`
+- `start postgreSQL server`
+
 ## Running the app
 
 ```bash
@@ -45,18 +48,40 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-## Test
+## Endpoints
 
-```bash
-# unit tests
-$ npm run test
+#### Users
 
-# e2e tests
-$ npm run test:e2e
+- `GET /auth`: Auth req!
+- `POST /auth`: body {username: string, password: string} //login
+- `GET /users`
+- `GET /users/:id`
+- `POST /users/`: body {username: string, password: string}: Auth req! //register
 
-# test coverage
-$ npm run test:cov
-```
+#### Posts
+
+- `GET api/posts/`
+- `GET api/posts/tag/:tagname`
+- `GET api/posts/:postId`
+- `POST api/posts/` : body: { title: string; body: string; tagName: "tag,tag2,tag3...";}: Auth req!
+- `DELETE api/posts/:postId`: Auth req!
+
+#### Answers
+
+- `GET api/posts/answers/:postId`
+- `POST api/posts/answers/:postId`: body: {body: string}: Auth req!
+- `DELETE api/posts/answers/:postId`: Auth req!
+
+#### Comments
+
+- `GET api/posts/comments/:postId`
+- `POST api/posts/comments/:postId`: body: {body: string}: Auth req!
+- `DELETE api/posts/comments/:postId`: Auth req!
+
+#### Tags
+
+- `GET api/tags/`
+- `GET api/tags/:tagname`
 
 ## Support
 

@@ -14,16 +14,20 @@ import { Tag } from './tag/entities/tag.entity';
 import { PostTag } from './tag/entities/posttag.entity';
 import { Answer } from './answer/entities/answer.entity';
 import { Comment } from './comment/entities/comment.entity';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'test',
-      password: '1111',
-      database: 'test',
+      host: process.env.DATABASE_HOST,
+      port: +process.env.DATABASE_PORT,
+      username: process.env.DATABASE_USER,
+      password: process.env.DATABASE_PASSWORD,
+      database: process.env.DATABASE_NAME,
       entities: [User, Post, Tag, PostTag, Answer, Comment],
       synchronize: true,
     }),

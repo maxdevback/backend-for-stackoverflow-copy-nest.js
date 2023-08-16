@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { sign } from 'jsonwebtoken';
+import { sign as createJWT } from 'jsonwebtoken';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 
@@ -17,17 +17,21 @@ export class UserService {
       Math.random() * 100,
     )}?s=164&d=identicon`;
     user.gravatar = gravatar;
-    console.log();
     const newUser = await this.userRepository.save(Object.assign(user, data));
-    console.log(sign({ id: newUser.id, username: newUser.username }, 'secret'));
-    return newUser;
+    return {
+      token: createJWT(
+        { id: newUser.id, username: newUser.username },
+        process.env.JWT_SECRET,
+      ),
+      user: newUser,
+    };
   }
 
   async findAll() {
     return await this.userRepository.find({ select: ['id', 'username'] });
   }
 
-  async findOne(id: number) {
+  async getById(id: number) {
     const user = await this.userRepository.findOne({ where: { id } });
     if (!user)
       throw new HttpException(

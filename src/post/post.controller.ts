@@ -6,6 +6,8 @@ import {
   Body,
   Req,
   Param,
+  HttpException,
+  HttpStatus,
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -17,14 +19,13 @@ export class PostController {
 
   @Post()
   create(@Body() data: CreatePostDto, @Req() req: IRequestWihUser) {
-    console.log(req.user);
     const dataWithUserId = { ...data, user_id: req.user.id };
     return this.postService.create(dataWithUserId);
   }
 
   @Get()
-  getAll() {
-    return this.postService.getAll();
+  async getAll() {
+    return { data: await this.postService.getAll() };
   }
   @Get('/tag/:tagname')
   getByTag(@Param('tagname') tagname: string) {
@@ -33,12 +34,13 @@ export class PostController {
 
   @Get(':postId')
   async getById(@Param('postId') postId: number) {
+    if (Number.isNaN(+postId))
+      throw new HttpException('Invalid path', HttpStatus.NOT_FOUND);
     return await this.postService.getById(postId);
   }
 
   @Delete(':postId')
   async delete(@Param('postId') postId: number, @Req() req: IRequestWihUser) {
-    console.log(req.user);
     return await this.postService.delete(postId, req.user.id);
   }
 }

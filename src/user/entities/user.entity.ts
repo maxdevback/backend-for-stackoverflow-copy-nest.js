@@ -39,7 +39,6 @@ export class User {
 
   @BeforeInsert()
   async hashPassword() {
-    console.log('In before insert');
     this.password = await hash(this.password, 10);
   }
 }

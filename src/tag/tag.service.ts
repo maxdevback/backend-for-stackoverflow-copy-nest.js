@@ -15,8 +15,8 @@ export class TagService {
     private readonly postTagRepository: Repository<PostTag>,
   ) {}
 
-  getAll() {
-    return `This action returns all tag`;
+  async getAll() {
+    return await this.tagRepository.find();
   }
   async delete(postId: number) {
     return await this.postTagRepository.query(
@@ -25,14 +25,10 @@ export class TagService {
     );
   }
 
-  findByName(name: string) {
-    return '';
-  }
   async getByTagName(tagname: string) {
     const tag = await this.tagRepository.findOne({
       where: { tagname },
     });
-    console.log('tag', tag);
     if (!tag)
       throw new HttpException('This tag dose not exist', HttpStatus.NOT_FOUND);
     return await this.postTagRepository.query(
@@ -86,7 +82,6 @@ export class TagService {
     await this.tagRepository.save(newTagsForDB);
     const mapAllTags = [];
     const allTags = [...tagsWithDesc, ...newTagsForDB];
-    console.log();
     allTags.forEach((tag, index) => {
       mapAllTags.push({
         post_id: postId,

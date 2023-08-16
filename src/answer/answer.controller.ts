@@ -23,8 +23,8 @@ export class AnswerController {
   ) {
     return await this.answerService.create({
       ...data,
-      post_id: +postId,
-      user_id: +req.user.id,
+      postId,
+      authId: req.user.id,
     });
   }
 
@@ -34,7 +34,7 @@ export class AnswerController {
   }
 
   @Delete(':answerId')
-  remove() {
-    // return this.answerService.remove(+id);
+  deleteById(@Param('answerId') answerId: number, @Req() req: IRequestWihUser) {
+    return this.answerService.deleteById(answerId, req.user.id);
   }
 }

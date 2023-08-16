@@ -15,7 +15,7 @@ export class PostService {
   ) {}
   async create(data: CreatePostDto & { user_id: number }) {
     const post = new Post();
-    post.User = await this.userService.findOne(data.user_id);
+    post.user = await this.userService.getById(data.user_id);
     post.body = data.body;
     post.title = data.title;
     const postInserted = await this.postRepository.save(post);
@@ -26,7 +26,6 @@ export class PostService {
   }
   async getByTag(tagname: string) {
     const postsIds: any[] = await this.tagService.getByTagName(tagname);
-    console.log(postsIds);
     return this.postRepository.find({
       where: { id: In(postsIds.map((postId) => postId.post_id)) },
     });
@@ -44,20 +43,19 @@ export class PostService {
   async delete(postId: number, authId: number) {
     const post = await this.postRepository.findOne({
       where: { id: postId },
-      relations: ['user_id'],
+      relations: ['user'],
     });
-    console.log('gdgfffgjhgj hgjghjg');
     if (!post)
       throw new HttpException(
         'The post with that id dose not exist',
         HttpStatus.NOT_FOUND,
       );
-    if (post.User.id !== authId)
+    if (post.user.id !== authId)
       throw new HttpException(
         "You're not a author of this post",
         HttpStatus.NOT_FOUND,
       );
-    console.log(await this.tagService.delete(postId));
+    await this.tagService.delete(postId);
     return await this.postRepository.delete({ id: postId });
   }
 }

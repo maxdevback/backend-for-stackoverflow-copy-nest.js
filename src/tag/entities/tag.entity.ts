@@ -4,7 +4,7 @@ import { PrimaryGeneratedColumn, Column, Entity } from 'typeorm';
 export class Tag {
   @PrimaryGeneratedColumn()
   id: number;
-  @Column()
+  @Column({ nullable: false })
   tagname: string;
 
   @Column()

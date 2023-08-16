@@ -24,9 +24,12 @@ import { PostTag } from 'src/tag/entities/posttag.entity';
 })
 export class AnswerModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AuthMiddleware).forRoutes({
-      path: '/posts/answers/:postId',
-      method: RequestMethod.POST,
-    });
+    consumer.apply(AuthMiddleware).forRoutes(
+      {
+        path: '/posts/answers/:postId',
+        method: RequestMethod.POST,
+      },
+      { path: '/posts/answers/:postId', method: RequestMethod.DELETE },
+    );
   }
 }

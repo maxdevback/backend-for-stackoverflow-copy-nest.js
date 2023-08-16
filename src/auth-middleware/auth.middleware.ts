@@ -17,13 +17,12 @@ export class AuthMiddleware implements NestMiddleware {
       throw new HttpException('Sign-in required', HttpStatus.UNAUTHORIZED);
 
     try {
-      const user: IUser = verifyToken(token, 'secret') as IUser;
+      const user: IUser = verifyToken(token, process.env.JWT_SECRET) as IUser;
       req.user = user;
     } catch (err) {
       console.error(`error: ${err}`);
       throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
     } finally {
-      console.log('here');
       next();
     }
   }

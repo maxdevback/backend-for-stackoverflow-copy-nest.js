@@ -21,7 +21,6 @@ export class CommentController {
     @Body() data: CreateCommentDto,
     @Req() req: IRequestWihUser,
   ) {
-    console.log();
     return await this.commentService.create({
       ...data,
       user_id: +req.user.id,
@@ -30,12 +29,15 @@ export class CommentController {
   }
 
   @Get(':postId')
-  getCommentsByPostId() {
-    // return this.commentService.findAll();
+  async getCommentsByPostId(@Param('postId') postId: number) {
+    return await this.commentService.getByPostId(postId);
   }
 
   @Delete(':commentId')
-  deleteById() {
-    //return this.commentService.remove(+id);
+  async deleteById(
+    @Param('commentId') commentId: number,
+    @Req() req: IRequestWihUser,
+  ) {
+    return await this.commentService.deleteById(commentId, req.user.id);
   }
 }

@@ -7,11 +7,11 @@ export class PostTag {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Post, (post) => post.id)
+  @ManyToOne(() => Post, (post) => post.id, { nullable: false })
   @JoinColumn({ name: 'post_id' })
   post_id: number;
 
-  @ManyToOne(() => Tag, (tag) => tag.id)
+  @ManyToOne(() => Tag, (tag) => tag.id, { nullable: false })
   @JoinColumn({ name: 'tag_id' })
   tag_id: number;
 }

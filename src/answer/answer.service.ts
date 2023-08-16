@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { CreateAnswerDto } from './dto/create-answer.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Answer } from './entities/answer.entity';
@@ -14,23 +14,39 @@ export class AnswerService {
     private readonly userService: UserService,
     private readonly postService: PostService,
   ) {}
-  async create(data: CreateAnswerDto & { post_id: number; user_id: number }) {
+  async create(data: CreateAnswerDto & { postId: number; authId: number }) {
     const answer = new Answer();
     answer.body = data.body;
-    answer.user = await this.userService.findOne(data.user_id);
-    answer.post = await this.postService.getById(data.post_id);
+    answer.user = await this.userService.getById(data.authId);
+    answer.post = await this.postService.getById(data.postId);
     return await this.answerRepository.save(answer);
   }
 
   async getByPostId(postId: number) {
-    console.log(postId);
-    return await this.answerRepository.query(
-      'SELECT * FROM answer WHERE post_id = $1',
-      [postId],
-    );
+    return await this.answerRepository.find({
+      where: { post: { id: postId } },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} answer`;
+  async deleteById(answerId: number, authId: number) {
+    const answer = await this.answerRepository.findOne({
+      where: { id: answerId },
+      relations: ['user'],
+    });
+    if (!answer) {
+      throw new HttpException(
+        'The answer with that dose not exist',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    if (answer.user.id !== authId) {
+      throw new HttpException(
+        "You're not a owner of this answer",
+        HttpStatus.FORBIDDEN,
+      );
+    }
+    delete answer.user.password;
+    await this.answerRepository.delete({ id: answer.id });
+    return answer;
   }
 }

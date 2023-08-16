@@ -22,7 +22,13 @@ export class AuthService {
         HttpStatus.NOT_FOUND,
       );
     if (await comparePassword(data.password, user.password)) {
-      return createJWT({ username: user.username, id: user.id }, 'secret');
+      return {
+        token: createJWT(
+          { username: user.username, id: user.id },
+          process.env.JWT_SECRET,
+        ),
+        user,
+      };
     } else {
       throw new HttpException(
         'The password is wrong',
