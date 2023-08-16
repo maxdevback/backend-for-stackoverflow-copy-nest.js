@@ -19,10 +19,10 @@ export class User {
   @Column({ nullable: false, unique: true })
   username: string;
 
-  @Column()
+  @Column({ nullable: false })
   password: string;
 
-  @Column()
+  @Column({ nullable: false })
   gravatar: string;
 
   @OneToMany(() => Post, (post) => post.id)
