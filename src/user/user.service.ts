@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { sign as createJWT } from 'jsonwebtoken';
@@ -17,6 +22,11 @@ export class UserService {
       Math.random() * 100,
     )}?s=164&d=identicon`;
     user.gravatar = gravatar;
+    const userFromDb = await this.userRepository.findOne({
+      where: { username: user.username },
+    });
+    if (userFromDb)
+      throw new ConflictException('User with that username already exist');
     const newUser = await this.userRepository.save(Object.assign(user, data));
     return {
       token: createJWT(
